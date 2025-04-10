@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Skin Analyzer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body style="overflow: hidden;">
+  <div class="page-container centered" id="pageWrapper" style="    overflow: hidden;
+  padding-left: 0;
+  padding-right: 0;">
+    <div class="left-panel">
+      <h2>AI Skin Analyzer</h2>
+
+      <label for="imageInput" class="custom-upload">
+        <span>➕ Attach image</span>
+      </label>
+      <input type="file" id="imageInput" accept="image/*" hidden />
+      <img id="previewImage" class="hidden" />
+
+      <div id="promptContainer" class="prompt-box hidden">
+        <textarea id="promptInput" placeholder="Ask about your skin..."></textarea>
+        <button id="submitBtn">Analyze</button>
+      </div>
+    </div>
+
+    <div class="right-panel" id="chatHistory">
+      <!-- Responses will appear here -->
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

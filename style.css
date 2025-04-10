@@ -1,0 +1,160 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #0e1117;
+  color: #f4f4f4;
+}
+
+.chat-layout {
+  display: flex;
+  height: 100vh;       /* Full viewport height */
+  overflow: hidden;    /* Prevent page scroll */
+  transition: all 0.6s ease-in-out;
+}
+
+.left-panel {
+  width: 30%;
+  background-color: #11141c;
+  padding: 30px;
+  box-shadow: 1px 0 0 #1c1f26;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;  /* 🔐 Prevent scroll */
+  height: 100vh;     /* Match viewport */
+  position: sticky;
+  top: 0;
+}
+
+
+.left-panel h2 {
+  color: #f4e9db;
+  margin-bottom: 20px;
+}
+.custom-upload {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #e0e0e0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.custom-upload:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+#previewImage {
+  width: 200px;
+  border-radius: 10px;
+  margin: 15px 0;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.prompt-box {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+textarea {
+  width: 100%;
+  height: 70px;
+  background: #1e232c;
+  border: none;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  resize: none;
+  font-size: 1rem;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+button {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button.loading {
+  opacity: 0.6;
+  pointer-events: none;
+  position: relative;
+}
+
+button.loading::after {
+  content: "⏳";
+  position: absolute;
+  right: 15px;
+}
+
+.right-panel {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;   /* ✅ Make this scrollable */
+  height: 100vh;
+}
+
+
+.chat-block {
+  margin-bottom: 25px;
+}
+
+.chat-block .user {
+  color: #e0e0e0;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.chat-block .response {
+  background-color: #1e232c;
+  padding: 15px;
+  border-radius: 10px;
+  color: #cbd5e1;
+  white-space: pre-wrap;
+  font-size: 1rem;
+}
+.page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  gap: 0;
+  transition: all 0.6s ease-in-out;
+  padding: 40px;
+}
+
+.page-container.centered .left-panel {
+  width: 100%;
+  max-width: 500px;
+}
+
+.page-container.centered .right-panel {
+  display: none;
+}
+
+.page-container.split {
+  justify-content: flex-start;
+  gap: 30px;
+}
+
+.page-container.split .left-panel {
+  width: 35%;
+}
+
+.page-container.split .right-panel {
+  flex: 1;
+  display: block;
+  max-height: 100%;
+  overflow-y: auto;
+}
