@@ -31,6 +31,43 @@ body {
   color: #f4e9db;
   margin-bottom: 20px;
 }
+input[type="text"],
+input[type="number"],
+select {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
+  background: #1e232c;
+  color: white;
+  box-sizing: border-box;
+}
+.profile-list {
+  width: 100%;
+  margin-bottom: 20px;
+  max-height: 250px;
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+.profile-item {
+  padding: 10px;
+  cursor: pointer;
+  color: #f3f3f3;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.profile-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.profile-item.active {
+  background-color: #1c1f26;
+  font-weight: bold;
+}
+
 .custom-upload {
   background-color: rgba(255, 255, 255, 0.05);
   color: #e0e0e0;
@@ -165,6 +202,25 @@ button.loading::after {
 body{
   overflow: hidden;
 }
+.thumbnail-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.thumbnail-gallery img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hidden {
+  display: none !important;
+}
+
 /* 🔁 Responsive Layout for Mobile */
 @media (max-width: 768px) {
   body{
