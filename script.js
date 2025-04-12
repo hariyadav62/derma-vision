@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "https://vision-api.onrender.com";
 
 const imageInput = document.getElementById("imageInput");
 const previewImage = document.getElementById("previewImage");
