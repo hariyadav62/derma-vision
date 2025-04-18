@@ -1,3 +1,4 @@
+// const API_URL = "http://127.0.0.1:8000";
 const API_URL = "https://vision-api.onrender.com";
 
 const imageInput = document.getElementById("imageInput");
@@ -48,7 +49,6 @@ submitBtn.addEventListener("click", async () => {
   submitBtn.innerText = "Analyzing...";
 
   try {
-    // 1. Create profile if needed
     if (!currentProfileId) {
       const name = nameInput.value.trim();
       const age = parseInt(ageInput.value.trim());
@@ -59,6 +59,7 @@ submitBtn.addEventListener("click", async () => {
         return;
       }
 
+      // Create new profile
       const profileRes = await fetch(`${API_URL}/profiles`, {
         method: "POST",
         headers: {
@@ -73,6 +74,7 @@ submitBtn.addEventListener("click", async () => {
       saveProfileIdLocally(currentProfileId);
       setLastOpenedProfile(currentProfileId);
 
+      // Upload image
       const imgForm = new FormData();
       imgForm.append("image", selectedImage);
 
@@ -83,44 +85,122 @@ submitBtn.addEventListener("click", async () => {
       });
 
       await fetchAndDisplayProfiles();
+
+      // Call /analyze
+      const analysisForm = new FormData();
+      analysisForm.append("image", selectedImage);
+      analysisForm.append("user_prompt", prompt);
+
+      const analysisRes = await fetch(`${API_URL}/analyze`, {
+        method: "POST",
+        body: analysisForm,
+      });
+
+      const data = await analysisRes.json();
+
+      if (data.analysis && data.recommendations) {
+        // 🧠 Save chat (don't re-call OpenAI)
+        await fetch(`${API_URL}/profiles/${currentProfileId}/chat`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: new URLSearchParams({
+            prompt,
+            response: JSON.stringify(data),  // ✅ tell backend to just save this
+          }),
+        });
+      
+        renderStructuredResponse(prompt, data);
+      } else {
+        addToChatHistory(prompt, data.response || "No structured response.");
+      }
+
+      promptInput.value = "";
+      selectedImage = null;
+      loadProfile(currentProfileId);
+      return; // 🚫 prevent follow-up logic from running
     }
 
-    // 2. Call analyze
-    const analysisForm = new FormData();
-    analysisForm.append("image", selectedImage);
-    analysisForm.append("user_prompt", prompt);
-
-    const analysisRes = await fetch(`${API_URL}/analyze`, {
-      method: "POST",
-      body: analysisForm,
-    });
-
-    const data = await analysisRes.json();
-    const response = data.response || data.error || "No response.";
-
-    // 3. Save chat
-    await fetch(`${API_URL}/profiles/${currentProfileId}/chat`, {
+    // Follow-up logic (no image)
+    const chatRes = await fetch(`${API_URL}/profiles/${currentProfileId}/chat`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: new URLSearchParams({ prompt, response }),
+      body: new URLSearchParams({ prompt }),
     });
 
-    addToChatHistory(prompt, response);
-    promptInput.value = "";
+    const data = await chatRes.json();
+    const reply = data.response || data.error || "No response.";
+    addToChatHistory(prompt, reply);
 
-    // Refresh profile to load images if needed
-    loadProfile(currentProfileId);
+    promptInput.value = "";
+    selectedImage = null;
+
   } catch (err) {
     console.error(err);
     alert("Something went wrong.");
   } finally {
     submitBtn.disabled = false;
-    submitBtn.innerText = "Analyze";
+    submitBtn.innerText = "Ask AI";
   }
 });
+
+function renderStructuredResponse(prompt, data) {
+  const block = document.createElement("div");
+  block.className = "chat-block";
+
+  const userDiv = document.createElement("div");
+  userDiv.className = "user";
+  userDiv.innerText = `You: ${prompt}`;
+
+  const aiContainer = document.createElement("div");
+  aiContainer.className = "response";
+
+  const analysisPara = document.createElement("p");
+  analysisPara.innerHTML = `<strong style="color: #bb9dff;">Analysis:</strong> ${data.analysis}`;
+  aiContainer.appendChild(analysisPara);
+
+  if (data.concerns?.length) {
+    const tagContainer = document.createElement("div");
+    tagContainer.className = "tags";
+    tagContainer.innerHTML = `<strong style="color: #bb9dff;">Concerns:</strong> `;
+    data.concerns.forEach(tag => {
+      const span = document.createElement("span");
+      span.className = "concern-tag";
+      span.innerText = tag;
+      tagContainer.appendChild(span);
+    });
+    aiContainer.appendChild(tagContainer);
+  }
+
+  if (data.recommendations?.length) {
+    const recList = document.createElement("div");
+    recList.className = "product-list";
+    recList.innerHTML = `<strong style="color: #bb9dff;">Recommended Products: </strong> `;
+    data.recommendations.forEach(prod => {
+      const card = document.createElement("div");
+      card.className = "product-card";
+      card.innerHTML = `
+        <div class="product-head">
+          <h4>${prod.name}</h4>
+          <p class="product-type-tag">${prod.type}</p>
+        </div>
+        <p>${prod.purpose}</p>
+      `;
+      recList.appendChild(card);
+    });
+    aiContainer.appendChild(recList);
+  }
+
+  block.appendChild(userDiv);
+  block.appendChild(aiContainer);
+  chatHistory.appendChild(block);
+  chatHistory.scrollTop = chatHistory.scrollHeight;
+}
 
 function addToChatHistory(userPrompt, aiResponse) {
   const block = document.createElement("div");
@@ -188,7 +268,12 @@ async function loadProfile(profileId) {
   }
 
   profile.chats.forEach(c => {
-    addToChatHistory(c.user_prompt, c.ai_response);
+    try {
+      const parsed = JSON.parse(c.ai_response);
+      renderStructuredResponse(c.user_prompt, parsed);
+    } catch {
+      addToChatHistory(c.user_prompt, c.ai_response);
+    }
   });
 }
 

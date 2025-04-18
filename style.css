@@ -4,6 +4,9 @@ body {
   background-color: #0e1117;
   color: #f4f4f4;
 }
+#newChatBtn {
+  margin-bottom: 10px;
+}
 
 .chat-layout {
   display: flex;
@@ -46,7 +49,7 @@ select {
 .profile-list {
   width: 100%;
   margin-bottom: 20px;
-  max-height: 250px;
+  max-height: 100vh;
   overflow-y: auto;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
@@ -221,6 +224,57 @@ body{
   display: none !important;
 }
 
+.concern-tag {
+  display: inline-block;
+  background-color: #531415;
+  color: #fdcece;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin: 5px 5px 5px 0;
+  font-size: 0.9em;
+  border: 1px solid #ff9e9e;
+}
+
+.product-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+  justify-content: flex-start;
+}
+
+.product-card {
+  background: #121927;
+  border: 1px solid #25427b;
+  padding: 12px;
+  border-radius: 6px;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+}
+.product-head {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.product-card h4 {
+  margin: 0;
+  font-weight: 400;
+  color: #b9ddff;
+  font-size: 18px;
+}
+
+.product-type-tag {
+  margin: 0;
+  border: 1px solid #6cb782;
+  width: fit-content;
+  border-radius: 80px;
+  padding: 1px 8px;
+  font-size: 14px;
+  color: #6cb782;
+}
+
+
 /* 🔁 Responsive Layout for Mobile */
 @media (max-width: 768px) {
   body{
@@ -252,4 +306,10 @@ body{
     padding: 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
+  .product-head {
+    display: flex;
+    gap: 10px;
+    align-items: start;
+    flex-direction: column;
+}
 }
